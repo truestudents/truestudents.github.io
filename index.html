@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>好学校也有苦楚！！！ — 徐教院附中·小社会式论坛</title>
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    font-family:"SimSun","宋体","Songti SC",serif;
+    font-size:15px;
+    background:#fff;
+    color:#000;
+    line-height:1.8;
+    padding-bottom:90px;
+  }
+  .wrap{ max-width:860px; margin:0 auto; padding:0 16px; }
+  a{ color:#000; text-decoration:underline; }
+  /* ===== 顶部站点信息行 ===== */
+  .topbar{
+    padding:10px 16px 4px;
+    font-size:13px; line-height:1.8;
+    border-bottom:2px solid #000;
+    word-break:break-all;
+  }
+  /* ===== 标题（左对齐） ===== */
+  .site-title{
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:40px; font-weight:900; letter-spacing:2px;
+    padding:20px 0 8px;
+  }
+  /* ===== 文件夹标签 + 大板块框（标签长在框的顶边上） ===== */
+  .board-frame{ margin-top:14px; }
+  nav.tabs{ display:flex; gap:6px; padding:0 10px; align-items:flex-end; flex-wrap:wrap; }
+  .tab{
+    appearance:none;
+    border:2px solid #000;
+    border-bottom:none;
+    background:#fff; color:#000;
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:18px; font-weight:700;
+    padding:7px 34px 7px 22px; cursor:pointer;
+    clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+    position:relative; top:2px;
+  }
+  .tab.active{ background:#000; color:#fff; }
+  .board-box{
+    border:2px solid #000;
+    background:#fff;
+    min-height:340px;
+    padding:20px 18px;
+  }
+  /* ===== 站长温馨提醒框（只在主页板块里显示） ===== */
+  .tip-box{
+    border:2px solid #000;
+    background:#fff;
+    margin-bottom:18px;
+    padding:14px 16px;
+    font-size:15px;
+    min-height:170px;
+    position:relative;
+  }
+  .tip-box .tip-sign{
+    position:absolute; right:16px; bottom:12px;
+    font-size:15px;
+  }
+  /* ===== 帖子卡片 ===== */
+  .post-list{ display:flex; flex-direction:column; }
+  .post{
+    border:2px solid #000;
+    background:#fff;
+    position:relative;
+    padding:34px 16px 12px;
+    margin-bottom:16px;
+  }
+  .post.is-local{ border-style:dashed; }
+  .post-name{
+    position:absolute; top:-2px; left:-2px;
+    background:#000; color:#fff;
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:15px; font-weight:700;
+    padding:3px 26px 4px 12px;
+    clip-path:polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+    max-width:75%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .post-title{
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:18px; font-weight:800;
+    margin-bottom:8px; padding-right:60px;
+  }
+  .local-tag{
+    display:inline-block; font-size:12px; font-weight:400; font-family:"SimSun","宋体",serif;
+    border:1px solid #000; padding:0 5px; margin-left:6px; vertical-align:middle;
+  }
+  .post-text{
+    border:1.5px solid #000;
+    padding:10px 12px;
+    font-size:15px;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  .post + .post{ border-top:none; }
+  .post-list .post:not(:first-child){
+    border-top:2px dotted #000;
+  }
+  .post-meta{
+    margin-top:10px;
+    font-size:13px;
+  }
+  /* ===== 关于我们 ===== */
+  .about h3{
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:20px; margin-bottom:10px;
+  }
+  .about p{ margin:4px 0; font-size:15px; }
+  .about .about-version{ margin-top:70px; }
+  .about .about-copy{
+    margin-top:14px;
+    border-top:2px dashed #000;
+    padding-top:8px;
+    text-align:center;
+    letter-spacing:2px;
+  }
+  /* ===== 发帖按钮 ===== */
+  .fab{
+    position:fixed; right:22px; bottom:24px; z-index:50;
+    border:2px solid #000; background:#000; color:#fff;
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:18px; font-weight:700; letter-spacing:3px;
+    padding:10px 26px; cursor:pointer;
+  }
+  /* ===== 发帖弹窗 ===== */
+  .modal-mask{
+    display:none; position:fixed; inset:0; z-index:100;
+    background:rgba(0,0,0,.4);
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .modal-mask.open{ display:flex; }
+  .modal{
+    width:100%; max-width:560px; max-height:90vh; overflow-y:auto;
+    background:#fff; border:2px solid #000;
+    padding:20px;
+  }
+  .modal h3{
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:22px; text-align:center;
+    border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:14px;
+    letter-spacing:4px;
+  }
+  .form-row{ margin-bottom:11px; }
+  .form-row label{ display:block; font-size:14px; font-weight:700; margin-bottom:3px; }
+  .form-row input[type=text], .form-row select, .form-row textarea{
+    width:100%; border:1.5px solid #000; background:#fff; color:#000;
+    padding:7px 9px; font-size:14px; font-family:"SimSun","宋体",serif;
+  }
+  .form-row textarea{ min-height:120px; resize:vertical; }
+  .modal-actions{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    border:2px solid #000; background:#fff; color:#000;
+    font-family:"SimHei","黑体","Microsoft YaHei",sans-serif;
+    font-size:16px; font-weight:700; letter-spacing:2px;
+    padding:6px 24px; cursor:pointer;
+  }
+  .btn.primary{ background:#000; color:#fff; }
+  .btn:disabled{ opacity:.5; cursor:wait; }
+  /* ===== 提示 ===== */
+  .toast{
+    position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(16px);
+    background:#000; color:#fff; border:2px solid #000;
+    padding:8px 22px; font-size:14px; z-index:200;
+    opacity:0; pointer-events:none; transition:all .25s;
+    max-width:92vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  @media (max-width:600px){
+    .site-title{ font-size:29px; }
+    .tab{ font-size:16px; padding:6px 24px 6px 16px; }
+    .board-box{ min-height:280px; padding:16px 12px; }
+    .fab{ right:12px; bottom:16px; padding:9px 18px; font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- 顶部站点信息 -->
+  <div class="topbar">
+    上海市徐汇区教育学院附属实验中学小社会式论坛（主站点：<a href="https://xjyfz.github.io/truexjyfz.github.io" target="_blank" rel="noopener">https://xjyfz.github.io/truexjyfz.github.io</a> 备用站点：<a href="https://xjyfz.github.io/truestudents.github.io" target="_blank" rel="noopener">https://xjyfz.github.io/truestudents.github.io</a>）
+  </div>
+  <!-- 标题 -->
+  <h1 class="site-title">好学校也有苦楚！！！</h1>
+  <!-- 文件夹标签 + 大板块框 -->
+  <div class="board-frame">
+    <nav class="tabs">
+      <button class="tab active" data-tab="home">主页</button>
+      <button class="tab" data-tab="guanxin">观心阁</button>
+      <button class="tab" data-tab="tucao">吐槽会</button>
+      <button class="tab" data-tab="about">关于我们</button>
+    </nav>
+    <!-- 大板块框：点标签后，这里跳转为对应板块页面 -->
+    <section class="board-box" id="boardBox"><!-- 板块内容 --></section>
+  </div>
+</div>
+<!-- 发帖按钮 -->
+<button class="fab" id="btnNewPost">发 帖</button>
+<!-- 发帖弹窗 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <h3>发 帖</h3>
+    <form id="postForm">
+      <div class="form-row">
+        <label>编号</label>
+        <input type="text" id="fNo" maxlength="10" placeholder="自己填，如 001">
+      </div>
+      <div class="form-row">
+        <label>名字（或笔名）</label>
+        <input type="text" id="fName" maxlength="20">
+      </div>
+      <div class="form-row">
+        <label>心情</label>
+        <input type="text" id="fMood" maxlength="12">
+      </div>
+      <div class="form-row">
+        <label>标题</label>
+        <input type="text" id="fTitle" maxlength="40">
+      </div>
+      <div class="form-row">
+        <label>正文</label>
+        <textarea id="fContent"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn primary" id="btnPublish">发布</button>
+        <button type="button" class="btn" id="btnCancel">取消</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+/* =====================================================
+ * 帖子数据区 —— 发布新帖时网页会自动把帖子写进这里，
+ * 并自动提交到 GitHub 仓库。
+ * （不要手动改动 __POSTS_START__ / __POSTS_END__ 标记）
+ * ===================================================== */
+const OFFICIAL_POSTS = [
+/*__POSTS_START__*/
+/*__POSTS_END__*/
+];
+/* ================= 以下为论坛逻辑，一般不用改 ================= */
+const LOCAL_KEY = "xjy_forum_posts_v1";
+// ==========硬编码写入你的token==========
+const STATIC_TOKEN = "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";
+let ghCfg = {token:STATIC_TOKEN};
+let repoPosts = null;
+let currentTab = "home";
+const BOARDS = ["home", "guanxin", "tucao", "about"];
+const BOARD_NAME = { home:"主页", guanxin:"观心阁", tucao:"吐槽会", about:"关于我们" };
+function $(s){ return document.querySelector(s); }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function getLocalPosts(){
+  try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); }
+  catch(e){ return []; }
+}
+function setLocalPosts(arr){ localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }
+function allPosts(){
+  const seen = new Set();
+  const out = [];
+  (repoPosts || OFFICIAL_POSTS).forEach(p => { if(!seen.has(p.id)){ seen.add(p.id); out.push(p); } });
+  getLocalPosts().forEach(p => { if(!seen.has(p.id)){ seen.add(p.id); out.push(p); } });
+  return out;
+}
+/* ---------- 板块页面跳转（hash 路由，每个板块一个独立页面） ---------- */
+function tabFromHash(){
+  const m = location.hash.match(/^#\/(\w+)/);
+  const t = m ? m[1] : "home";
+  return BOARDS.indexOf(t) >= 0 ? t : "home";
+}
+function navigate(tab){
+  if(location.hash !== "#/" + tab) location.hash = "#/" + tab;
+  else renderBoard();
+}
+window.addEventListener("hashchange", renderBoard);
+document.querySelectorAll(".tab").forEach(t =>
+  t.addEventListener("click", () => navigate(t.dataset.tab)));
+/* ---------- 渲染当前板块页面到大框里 ---------- */
+function renderBoard(){
+  currentTab = tabFromHash();
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.toggle("active", t.dataset.tab === currentTab));
+  const box = $("#boardBox");
+  if(currentTab === "about"){
+    box.innerHTML = aboutHTML();
+  } else if(currentTab === "home"){
+    // 主页：只有站长温馨提醒，不能发帖
+    box.innerHTML =
+      '<div class="tip-box">请确认您的浏览器版本（Edge2015版本以上；chrome2010版本以上）……' +
+      '<span class="tip-sign">（站长温馨提醒）</span></div>';
+  } else {
+    const posts = allPosts().filter(p => p.board === currentTab).sort((a,b) => b.id - a.id);
+    box.innerHTML = posts.length
+      ? '<div class="post-list">' + posts.map(postHTML).join("") + '</div>'
+      : "";   // 空白板块
+  }
+  // 发帖按钮只在文件夹板块（观心阁/吐槽会）出现；在哪个板块点，就自动发到哪个板块
+  $("#btnNewPost").style.display = (currentTab === "guanxin" || currentTab === "tucao") ? "" : "none";
+  window.scrollTo({ top:0 });
+}
+function postHTML(p){
+  // 编号/名字/心情/标题都是发帖人想填就填，没填就留空
+  const titleRow = p.title
+    ? `<h3 class="post-title">${esc(p.title)}${p.local ? '<span class="local-tag">本机</span>' : ""}</h3>`
+    : "";
+  return `
+  <article class="post ${p.local ? "is-local" : ""}">
+    <div class="post-name">${esc(p.name)}</div>
+    ${titleRow}
+    <div class="post-text">${esc(p.content)}</div>
+    <div class="post-meta">编号：${esc(p.no)} ｜ 名字(或笔名)：${esc(p.name)} ｜ 心情：${esc(p.mood)} ｜ 日期：${esc(p.date)}</div>
+  </article>`;
+}
+function aboutHTML(){
+  return `
+  <div class="about">
+    <h3>关于我们：</h3>
+    <p>网站站长：甲醇杨(化名)</p>
+    <p>徐教院编号(2026年)：6205</p>
+    <p>邮箱：<a href="mailto:jcy20150321@163.com">jcy20150321@163.com</a></p>
+    <p class="about-version">网站版本：v.1.0</p>
+    <p class="about-copy">—————— 徐教院附中实验中学 ——————</p>
+  </div>`;
+}
+/* ---------- 弹窗 ---------- */
+const mask = $("#modalMask");
+$("#btnNewPost").addEventListener("click", () => {
+  // 发帖按钮只在观心阁/吐槽会出现，在哪个板块点就自动发到哪个板块
+  if(currentTab !== "guanxin" && currentTab !== "tucao") return;
+  mask.classList.add("open");
+});
+$("#btnCancel").addEventListener("click", () => mask.classList.remove("open"));
+mask.addEventListener("click", e => { if(e.target === mask) mask.classList.remove("open"); });
+function showToast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), 3200);
+}
+function nowText(){
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  return d.getFullYear() + "/" + p(d.getMonth()+1) + "/" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+function readForm(){
+  // 板块不用选：在哪个板块点发帖就自动归到哪个板块；编号/名字/心情/标题想填就填
+  return {
+    board: currentTab,
+    no: $("#fNo").value.trim(),
+    name: $("#fName").value.trim(),
+    mood: $("#fMood").value.trim(),
+    title: $("#fTitle").value.trim(),
+    content: $("#fContent").value.trim()
+  };
+}
+/* ---------- GitHub 设置：仓库就是本网站所在仓库，网页按网址自动识别 ---------- */
+function ghRepo(){
+  // truexjyfz.github.io/            → truexjyfz/truexjyfz.github.io
+  // truestudents.github.io/         → truestudents/truestudents.github.io
+  // user.github.io/repo/            → user/repo
+  const m = location.pathname.match(/^\/([^/]+)(?:\/([^/]+))?/);
+  if(location.hostname.endsWith(".github.io")){
+    const user = location.hostname.split(".")[0];
+    const first = m && m[1] ? decodeURIComponent(m[1]) : "";
+    if(first && first !== user) return user + "/" + first;
+    return user + "/" + user + ".github.io";
+  }
+  return "";   // 本地双击打开网页时识别不到，把网页传上 GitHub Pages 即可
+}
+
+/* ---------- GitHub API：读取 / 提交 index.html ---------- */
+function ghHeaders(){
+  return {
+    "Authorization": "Bearer " + ghCfg.token,
+    "Accept": "application/vnd.github+json"
+  };
+}
+function parsePostsFromText(text){
+  const m = text.match(/\/\*__POSTS_START__\*\/([\s\S]*?)\/\*__POSTS_END__\*\//);
+  if(!m) return null;
+  const inner = m[1].trim();
+  if(!inner) return [];
+  try { return JSON.parse("[" + inner.replace(/,\s*$/, "") + "]"); }
+  catch(e){ return null; }
+}
+function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+function b64decode(b64){ return decodeURIComponent(escape(atob(b64.replace(/\s/g, "")))); }
+async function ghFetchIndex(){
+  const url = "https://api.github.com/repos/" + ghRepo() + "/contents/index.html";
+  const r = await fetch(url, { headers: ghHeaders() });
+  if(!r.ok) throw new Error("读取仓库失败（HTTP " + r.status + "），请检查仓库是否正确、令牌是否勾选了 repo 权限");
+  const data = await r.json();
+  return { text: b64decode(data.content), sha: data.sha };
+}
+async function ghCommitPost(post){
+  const { text, sha } = await ghFetchIndex();
+  const posts = parsePostsFromText(text);
+  if(posts === null) throw new Error("仓库里的 index.html 不是本论坛版本（找不到帖子标记），请先把最新网页传上仓库");
+  const merged = posts.filter(p => p.id !== post.id);
+  merged.push(post);   // 编号由发帖人自己填，不自动编号
+  const block = merged.map(p =>
+    JSON.stringify(p, null, 2).split("\n").map(l => "  " + l).join("\n")
+  ).join(",\n");
+  const newText = text.replace(
+    /(\/\*__POSTS_START__\*\/)([\s\S]*?)(\/\*__POSTS_END__\*\/)/,
+    function(_m, a, _b, c){ return a + "\n" + block + "\n" + c; });
+  const putUrl = "https://api.github.com/repos/" + ghRepo() + "/contents/index.html";
+  const pr = await fetch(putUrl, {
+    method: "PUT",
+    headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()),
+    body: JSON.stringify({
+      message: "新帖子：" + (post.title || "（无标题）"),
+      content: b64encode(newText),
+      sha: sha
+    })
+  });
+  if(!pr.ok){
+    let detail = "";
+    try { detail = (await pr.json()).message || ""; } catch(e){}
+    throw new Error("提交到 GitHub 失败（HTTP " + pr.status + "）" + (detail ? "：" + detail : ""));
+  }
+  repoPosts = merged;
+}
+async function syncRepoPosts(){
+  if(!ghCfg || !ghCfg.token || !ghRepo()) return;
+  try {
+    const { text } = await ghFetchIndex();
+    const posts = parsePostsFromText(text);
+    if(Array.isArray(posts)){
+      repoPosts = posts;
+      renderBoard();
+    }
+  } catch(e){ /* 静默失败，保留本机显示 */ }
+}
+/* ---------- 发布 ---------- */
+$("#postForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = readForm();   // 编号/名字/心情/标题都可以不填
+  const post = Object.assign({ id: Date.now(), date: nowText() }, f);
+  // 先存本机，立即显示
+  const locals = getLocalPosts();
+  locals.push(Object.assign({ local:true }, post));
+  setLocalPosts(locals);
+  renderBoard();
+  if(!ghCfg || !ghCfg.token || !ghRepo()){
+    mask.classList.remove("open");
+    $("#postForm").reset();
+    showToast("网页还没传到 GitHub Pages，帖子只保存在这台电脑的浏览器里");
+    return;
+  }
+  const btn = $("#btnPublish");
+  btn.disabled = true; btn.textContent = "发布中…";
+  try {
+    await ghCommitPost(post);
+    setLocalPosts(getLocalPosts().filter(p => p.id !== post.id));
+    renderBoard();
+    mask.classList.remove("open");
+    $("#postForm").reset();
+    showToast("已发布，并自动存进 GitHub 仓库！1～2 分钟后网页刷新就能看到");
+  } catch(err){
+    showToast(err.message + "（帖子已先保存在本浏览器，修好设置后重新发布即可）");
+  } finally {
+    btn.disabled = false; btn.textContent = "发布";
+  }
+});
+/* ---------- 启动 ---------- */
+renderBoard();
+syncRepoPosts();
+</script>
+</body>
+</html>
